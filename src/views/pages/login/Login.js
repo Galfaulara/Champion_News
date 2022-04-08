@@ -1,5 +1,3 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -13,10 +11,46 @@ import {
   CInputGroupText,
   CRow,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
+import { Link, useHistory } from 'react-router-dom'
+import React, { useState } from 'react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import { useDispatch, useSelector } from 'react-redux'
+
+import Axios from 'axios'
+import CIcon from '@coreui/icons-react'
+import { useLocation } from 'react-router-dom'
 
 const Login = () => {
+  const IsLoggedIn = useSelector((state) => state.IsLoggedIn)
+  const dispatch = useDispatch()
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const history = useHistory()
+  const onUsernameChange = (event) => {
+    setUsername(event.target.value)
+  }
+  const onPasswordChange = (event) => {
+    setPassword(event.target.value)
+    console.log(IsLoggedIn, 'IsloggedIn?')
+  }
+  const submitLogin = async (req, res) => {
+    if (username === '' || password === '') {
+      alert('Enter valid credentials')
+    } else {
+      const isAuthenticated = await Axios.post('http://localhost:3000/login', {
+        username: username.toLowerCase(),
+        password: password.toLowerCase(),
+      })
+      if (isAuthenticated.data.data.authentication === true) {
+        dispatch({ type: 'set', IsLoggedIn: true })
+        localStorage.setItem('isLoggedIn', JSON.stringify(true))
+        console.log(JSON.parse(localStorage.getItem('isLoggedIn')), 'Parsed IsLoggedIn')
+      }
+      history.go('/')
+
+      console.log('Pushed history')
+    }
+  }
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -32,7 +66,11 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput
+                        placeholder="Username"
+                        autoComplete="username"
+                        onChange={onUsernameChange}
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
@@ -42,11 +80,17 @@ const Login = () => {
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
+                        onChange={onPasswordChange}
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                        <CButton
+                          color="primary"
+                          className="px-4"
+                          role="button"
+                          onClick={submitLogin}
+                        >
                           Login
                         </CButton>
                       </CCol>
