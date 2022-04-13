@@ -1,3 +1,4 @@
+import Champions from './views/champions/champions'
 import React from 'react'
 import ViewPort from './views/viewport/ViewPort'
 
@@ -55,6 +56,7 @@ const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/viewport', name: 'ViewPort', component: ViewPort },
+  { path: '/champions', name: 'Champions', component: Champions },
   { path: '/theme', name: 'Theme', component: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', component: Colors },
   { path: '/theme/typography', name: 'Typography', component: Typography },

@@ -12,7 +12,7 @@ import {
   CRow,
 } from '@coreui/react'
 import { Link, useHistory } from 'react-router-dom'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -25,7 +25,7 @@ const Login = () => {
   const dispatch = useDispatch()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const history = useHistory()
+  let history = useHistory()
   const onUsernameChange = (event) => {
     setUsername(event.target.value)
   }
@@ -33,6 +33,13 @@ const Login = () => {
     setPassword(event.target.value)
     console.log(IsLoggedIn, 'IsloggedIn?')
   }
+  const authenticationHandler = async () => {
+    dispatch({ type: 'set', IsLoggedIn: true })
+    localStorage.setItem('isLoggedIn', JSON.stringify(true))
+    localStorage.setItem('user', JSON.stringify(username))
+    console.log(JSON.parse(localStorage.getItem('isLoggedIn')), 'Parsed IsLoggedIn')
+  }
+
   const submitLogin = async (req, res) => {
     if (username === '' || password === '') {
       alert('Enter valid credentials')
@@ -42,15 +49,12 @@ const Login = () => {
         password: password.toLowerCase(),
       })
       if (isAuthenticated.data.data.authentication === true) {
-        dispatch({ type: 'set', IsLoggedIn: true })
-        localStorage.setItem('isLoggedIn', JSON.stringify(true))
-        console.log(JSON.parse(localStorage.getItem('isLoggedIn')), 'Parsed IsLoggedIn')
+        await authenticationHandler()
       }
-      history.go('/')
-
-      console.log('Pushed history')
     }
   }
+  useEffect(() => history.go('/'), [IsLoggedIn])
+
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
