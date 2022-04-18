@@ -1,0 +1,27 @@
+#gamesFollowed{
+    display: flex;
+    justify-content: space-evenly;
+    
+}
+
+#eachGame{
+display: flex;
+align-items:center;
+
+}
+
+#championName{
+    display: flex;
+    justify-content: center;
+}
+
+#cardButtons{
+    display: flex;
+    justify-content: left;
+}
+
+#gamesToFollow{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}

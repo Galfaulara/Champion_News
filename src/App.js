@@ -27,6 +27,7 @@ const App = () => {
       <React.Suspense fallback={loading}>
         <Switch>
           <Route exact path="/login" name="Login Page" render={(props) => <Login {...props} />} />
+          <Route path="/" name="Home" render={(props) => <DefaultLayout {...props} />} />
           <Route
             exact
             path="/register"
@@ -36,11 +37,7 @@ const App = () => {
 
           <Route exact path="/404" name="Page 404" render={(props) => <Page404 {...props} />} />
           <Route exact path="/500" name="Page 500" render={(props) => <Page500 {...props} />} />
-          {JSON.parse(localStorage.getItem('isLoggedIn')) ? (
-            <Route path="/" name="Home" render={(props) => <DefaultLayout {...props} />} />
-          ) : (
-            <Redirect from="*" to="login" />
-          )}
+          {JSON.parse(localStorage.getItem('isLoggedIn')) && <Redirect from="/*" to="login" />}
         </Switch>
       </React.Suspense>
     </HashRouter>

@@ -18,14 +18,14 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import Axios from 'axios'
 import CIcon from '@coreui/icons-react'
-import { useLocation } from 'react-router-dom'
 
 const Login = () => {
-  const IsLoggedIn = useSelector((state) => state.IsLoggedIn)
-  const dispatch = useDispatch()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   let history = useHistory()
+  const dispatch = useDispatch()
+  const IsLoggedIn = useSelector((state) => state.IsLoggedIn)
+
   const onUsernameChange = (event) => {
     setUsername(event.target.value)
   }
@@ -33,6 +33,7 @@ const Login = () => {
     setPassword(event.target.value)
     console.log(IsLoggedIn, 'IsloggedIn?')
   }
+
   const authenticationHandler = async () => {
     dispatch({ type: 'set', IsLoggedIn: true })
     localStorage.setItem('isLoggedIn', JSON.stringify(true))
@@ -50,10 +51,10 @@ const Login = () => {
       })
       if (isAuthenticated.data.data.authentication === true) {
         await authenticationHandler()
+        history.push('/')
       }
     }
   }
-  useEffect(() => history.go('/'), [IsLoggedIn])
 
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">

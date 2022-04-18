@@ -12,15 +12,29 @@ import {
   CRow,
 } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
-import { cilCommentBubble, cilDelete, cilPencil, cilTrash, cilUser } from '@coreui/icons'
+import { cilDelete, cilNoteAdd, cilPencil, cilTrash, cilUser } from '@coreui/icons'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Axios from 'axios'
 import CIcon from '@coreui/icons-react'
 
 const Champions = () => {
+  const deleteGamefollow = useSelector((state) => state.deleteGamefollow)
+
   const [championName, setChampionName] = useState('')
+
   const [riotGameToFollow, setRiotGame] = useState([])
+
   const [followedChampionsDisplay, setFollowedChampionsDisplay] = useState([])
+
+  const [gamesArray, setGamesArray] = useState([
+    'League of Legends',
+    'Legends of Runeterra',
+    'Teamfight Tactics',
+    'General Lore',
+  ])
+
+  const dispatch = useDispatch()
 
   const submitSend = async (req, res) => {
     let loggedUser = localStorage.getItem('user')
@@ -40,6 +54,7 @@ const Champions = () => {
     const followedChampions = await Axios.get('http://localhost:3000/champions/get')
     setFollowedChampionsDisplay(followedChampions.data)
   }
+
   const handleRiotGamesArray = (check) => {
     let newElement = check.target.value
     let currentArray = riotGameToFollow
@@ -50,7 +65,6 @@ const Champions = () => {
     if (riotGameToFollow.includes(newElement)) {
       let indexToRemove = currentArray.indexOf(newElement)
       setRiotGame(riotGameToFollow.filter(gamesFilter))
-      console.log('newState', indexToRemove)
     } else {
       setRiotGame((riotGameToFollow) => [...riotGameToFollow, newElement])
     }
@@ -61,9 +75,24 @@ const Champions = () => {
   }
 
   const editFollow = async (championName) => {
-    // await Axios.delete('http://localhost:3000/champions/delete', card)
-    console.log(championName, 'edit')
+    dispatch({ type: 'set', deleteGamefollow: !deleteGamefollow })
+    console.log(championName, deleteGamefollow)
   }
+
+  const eliminateGame = async (game, championName) => {
+    const eliminateData = await Axios.put('http://localhost:3000/champions/updateEliminate', {
+      champion: championName,
+      game: game,
+    })
+  }
+
+  const addGame = async (game, championName) => {
+    const addData = await Axios.put('http://localhost:3000/champions/updateAdd', {
+      champion: championName,
+      game: game,
+    })
+  }
+
   useEffect(() => {
     console.log(riotGameToFollow, 'riotGamestoFollow')
     console.log(championName)
@@ -148,6 +177,17 @@ const Champions = () => {
                 <CButton color="primary" className="px-4" role="button" onClick={submitSend}>
                   Add Champion
                 </CButton>
+                <CButton
+                  color="primary"
+                  id="editButton"
+                  className="px-3 m-2"
+                  role="button"
+                  onClick={() => {
+                    editFollow(championName)
+                  }}
+                >
+                  Edit <CIcon icon={cilPencil} />
+                </CButton>
               </CCol>
               <CCol xs={6} className="text-right"></CCol>
             </CRow>
@@ -159,36 +199,60 @@ const Champions = () => {
         return (
           <CCard className="p-1" color="light" key={i}>
             <CCardBody>
-              <h1>{championName}</h1>
-              <div>
+              <h1 id="championName">{championName}</h1>
+              <div id="gamesFollowed">
                 {champion.games.map((game, i) => (
-                  <p key={i}>
-                    {game}
-                    <CIcon icon={cilDelete} />
-                  </p>
-                ))}
+                  <>
+                    <p key={i} id="eachGame">
+                      <div>
+                        {game}
+                        {deleteGamefollow && (
+                          <CIcon
+                            icon={cilDelete}
+                            onClick={() => {
+                              eliminateGame(game, championName)
+                            }}
+                          />
+                        )}
+                      </div>
+                    </p>
+                  </>
+                ))}{' '}
+                {deleteGamefollow && (
+                  <>
+                    {gamesArray
+                      .filter((game) => !champion.games.includes(game))
+                      .map((item) => (
+                        <>
+                          <p id="eachGame">
+                            <div id="gamesToFollow">
+                              {item}{' '}
+                              <CIcon
+                                icon={cilNoteAdd}
+                                onClick={() => {
+                                  addGame(item, championName)
+                                }}
+                              />{' '}
+                            </div>
+                          </p>
+                        </>
+                      ))}
+                  </>
+                )}
               </div>
-
-              <CButton
-                color="primary"
-                className="px-3 m-2"
-                role="button"
-                onClick={() => {
-                  deleteFollow(championName)
-                }}
-              >
-                <CIcon icon={cilTrash} />
-              </CButton>
-              <CButton
-                color="primary"
-                className="px-3 m-2"
-                role="button"
-                onClick={() => {
-                  editFollow(championName)
-                }}
-              >
-                <CIcon icon={cilPencil} />
-              </CButton>
+              <div id="cardButtons">
+                <CButton
+                  color="primary"
+                  id="deleteButton"
+                  className="px-3 m-2"
+                  role="button"
+                  onClick={() => {
+                    deleteFollow(championName)
+                  }}
+                >
+                  <CIcon icon={cilTrash} />
+                </CButton>
+              </div>
             </CCardBody>
           </CCard>
         )
