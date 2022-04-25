@@ -15,11 +15,9 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 
 import Axios from 'axios'
 import CIcon from '@coreui/icons-react'
-import { useDispatch } from 'react-redux'
 import validator from 'validator'
 
 const Register = () => {
-  const dispatch = useDispatch()
   const [username, setUsername] = useState([''])
   const [password, setPassword] = useState([''])
   const [eMail, setEmail] = useState([''])
@@ -38,7 +36,7 @@ const Register = () => {
   }
   const submitRegister = async (req, res) => {
     if (password === repeatPassword && validator.isEmail(eMail)) {
-      const isRegistered = await Axios.post('http://localhost:3000/register', {
+      await Axios.post('http://localhost:3000/register', {
         username: username.toLowerCase(),
         password: password,
         eMail: eMail.toLowerCase(),

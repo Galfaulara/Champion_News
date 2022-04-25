@@ -4,10 +4,8 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 
 // routes config
 import routes from '../routes'
-import { useSelector } from 'react-redux'
 
 const AppContent = () => {
-  const IsLoggedIn = useSelector((state) => state.IsLoggedIn)
   return (
     <CContainer lg>
       <Suspense fallback={<CSpinner color="primary" />}>

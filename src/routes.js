@@ -1,4 +1,6 @@
 import Champions from './views/champions/champions'
+import Page404 from './views/pages/page404/Page404'
+import Page500 from './views/pages/page500/Page500'
 import React from 'react'
 import ViewPort from './views/viewport/ViewPort'
 
@@ -99,6 +101,8 @@ const routes = [
   { path: '/notifications/modals', name: 'Modals', component: Modals },
   { path: '/notifications/toasts', name: 'Toasts', component: Toasts },
   { path: '/widgets', name: 'Widgets', component: Widgets },
+  { path: '/404', name: '404', component: Page404 },
+  { path: '/500', name: '500', component: Page500 },
 ]
 
 export default routes

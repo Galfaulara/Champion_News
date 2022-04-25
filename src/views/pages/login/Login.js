@@ -12,7 +12,7 @@ import {
   CRow,
 } from '@coreui/react'
 import { Link, useHistory } from 'react-router-dom'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 

@@ -57,13 +57,11 @@ const Champions = () => {
 
   const handleRiotGamesArray = (check) => {
     let newElement = check.target.value
-    let currentArray = riotGameToFollow
     const gamesFilter = (games) => {
       return games !== newElement
     }
 
     if (riotGameToFollow.includes(newElement)) {
-      let indexToRemove = currentArray.indexOf(newElement)
       setRiotGame(riotGameToFollow.filter(gamesFilter))
     } else {
       setRiotGame((riotGameToFollow) => [...riotGameToFollow, newElement])
@@ -80,14 +78,14 @@ const Champions = () => {
   }
 
   const eliminateGame = async (game, championName) => {
-    const eliminateData = await Axios.put('http://localhost:3000/champions/updateEliminate', {
+    await Axios.put('http://localhost:3000/champions/updateEliminate', {
       champion: championName,
       game: game,
     })
   }
 
   const addGame = async (game, championName) => {
-    const addData = await Axios.put('http://localhost:3000/champions/updateAdd', {
+    await Axios.put('http://localhost:3000/champions/updateAdd', {
       champion: championName,
       game: game,
     })
@@ -99,6 +97,12 @@ const Champions = () => {
   }, [riotGameToFollow, championName])
 
   useEffect(() => {
+    setGamesArray([
+      'League of Legends',
+      'Legends of Runeterra',
+      'Teamfight Tactics',
+      'General Lore',
+    ])
     getFollowedChampions()
   }, [followedChampionsDisplay])
 
@@ -197,14 +201,14 @@ const Champions = () => {
       {followedChampionsDisplay.map((champion, i) => {
         let championName = champion.champion[0].toUpperCase() + champion.champion.slice(1)
         return (
-          <CCard className="p-1" color="light" key={i}>
+          <CCard className="p-1" color="light" key={i + champion}>
             <CCardBody>
               <h1 id="championName">{championName}</h1>
               <div id="gamesFollowed">
                 {champion.games.map((game, i) => (
                   <>
-                    <p key={i} id="eachGame">
-                      <div>
+                    <p id="eachGame">
+                      <>
                         {game}
                         {deleteGamefollow && (
                           <CIcon
@@ -214,26 +218,26 @@ const Champions = () => {
                             }}
                           />
                         )}
-                      </div>
+                      </>
                     </p>
                   </>
-                ))}{' '}
+                ))}
                 {deleteGamefollow && (
                   <>
                     {gamesArray
                       .filter((game) => !champion.games.includes(game))
-                      .map((item) => (
+                      .map((item, i) => (
                         <>
-                          <p id="eachGame">
-                            <div id="gamesToFollow">
-                              {item}{' '}
+                          <p id="eachGame2">
+                            <>
+                              {item}
                               <CIcon
                                 icon={cilNoteAdd}
                                 onClick={() => {
                                   addGame(item, championName)
                                 }}
-                              />{' '}
-                            </div>
+                              />
+                            </>
                           </p>
                         </>
                       ))}
